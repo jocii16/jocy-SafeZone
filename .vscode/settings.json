@@ -1,0 +1,9 @@
+{
+    "Lua.diagnostics.disable": [
+        "unused-function",
+        "missing-parameter"
+    ],
+    "Lua.diagnostics.globals": [
+        "player"
+    ]
+}
