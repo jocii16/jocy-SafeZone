@@ -4,7 +4,7 @@ game 'gta5'
 
 lua54 'yes'
 
-description 'asd'
+description 'JocY SafeZone'
 
 version '1.0.0'
 
@@ -16,8 +16,3 @@ shared_script {
     'config/config.lua',
     '@ox_lib/init.lua'
 }
-
-escrow_ignore {
-    'config/config.lua'
-}
-dependency '/assetpacks'
