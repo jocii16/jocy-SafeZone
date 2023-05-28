@@ -1,61 +1,64 @@
-local inZone = false
-
-function onEnter(self)
-    inZone = true
-    lib.notify({
-        title = Config.TitleHaKilep,
-        description = Config.DescriptionHaKilep,
-        type = Config.TypeHaKilep,
-        position = 'top'
-    })
-    local playerPed = PlayerPedId()
-    local vehicle = GetVehiclePedIsIn(player, false)
-
-    SetEntityInvincible(playerPed, true)
-    NetworkSetFriendlyFireOption(false)
-	ClearPlayerWantedLevel(PlayerPedId())
-    SetEntityCanBeDamaged(vehicle, true)
-
-CreateThread(function ()
-    while true do
-        if cache.vehicle and inZone == true then
-            SetVehicleMaxSpeed(cache.vehicle, Config.speedLimit)
-            Wait(50)
-        else
-            Wait(1000)
-        end
-
-        if IsControlJustPressed(0, 106) and inZone then
-            SetCurrentPedWeapon(PlayerPedId(),GetHashKey("WEAPON_UNARMED"),true)
-        end
-    end 
-end)
-    
+function onEnter(...)
+    notify("enter")
 end
+
+--Basic notify function, we should use dictionary. But we have 2 condition, it's not necessarily. 
+
+function notify(typeof)
+    if typeof == "enter" then
+        lib.notify({
+            title = Config.TitleHaKilep,
+            description = Config.DescriptionHaKilep,
+            type = Config.TypeHaKilep,
+            position = 'top'
+        })
+    elseif typeof == "exit" then
+        lib.notify({
+            title = Config.TitleHaBelep,
+            description = Config.DescriptionHaBelep,
+            type = Config.TypeHaBelep,
+            position = 'top'
+        })
+    end
+end
+
+--When player inside this area 
+
+function inside(self)
+    local ped = GetPlayerPed(self.id)
+    local curveh = GetVehiclePedIsIn(ped, false)
+    if curveh then
+        SetVehicleMaxSpeed(curveh, Config.speedLimit)
+        SetEntityCanBeDamaged(curveh, true)
+    end
+    SetEntityInvincible(ped, true)
+    NetworkSetFriendlyFireOption(false)
+    ClearPlayerWantedLevel(PlayerPedId())
+    SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+end
+
+--Exit function 
 
 function onExit(self)
-    inZone = false
-    lib.notify({
-        title = Config.TitleHaBelep,
-        description = Config.DescriptionHaBelep,
-        type = Config.TypeHaBelep,
-        position = 'top'
-    })
-    local playerPed = PlayerPedId()
-    local vehicle = GetVehiclePedIsIn(player, false)
-
-    SetEntityInvincible(playerPed, false)
+    notify("exit")
+    local ped = GetPlayerPed(self.id)
+    local curveh = GetVehiclePedIsIn(ped, false)
+    if curveh then
+        SetEntityCanBeDamaged(curveh, true)
+    end
+    SetEntityInvincible(ped, false)
     NetworkSetFriendlyFireOption(true)
-    SetEntityCanBeDamaged(vehicle, true)
-
 end
 
-CreateThread(function ()
-    for k,v in pairs(Config.zones) do
+--Create Zones
+
+CreateThread(function()
+    for k, v in pairs(Config.zones) do
         local zone = lib.zones.sphere({
             coords = v.coords,
             radius = v.radius,
             debug = v.debug,
+            inside = inside,
             onEnter = onEnter,
             onExit = onExit
         })
