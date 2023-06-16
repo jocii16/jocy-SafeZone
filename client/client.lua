@@ -1,6 +1,6 @@
 local inZone = false
 
-function onEnter(self)
+function onExit(self)
     inZone = true
     lib.notify({
         title = Config.TitleHaKilep,
@@ -18,11 +18,13 @@ function onEnter(self)
 
 CreateThread(function ()
     while true do
-        if cache.vehicle and inZone == true then
-            SetVehicleMaxSpeed(cache.vehicle, Config.speedLimit)
-            Wait(50)
-        else
-            Wait(1000)
+        for k, v in ipairs(Config.zones) do
+            if cache.vehicle and inZone == true then
+                SetVehicleMaxSpeed(cache.vehicle, v.speedLimit)
+                Wait(50)
+            else
+                Wait(1000)
+            end 
         end
 
         if IsControlJustPressed(0, 106) and inZone then
@@ -33,7 +35,7 @@ end)
     
 end
 
-function onExit(self)
+function onEnter(self)
     inZone = false
     lib.notify({
         title = Config.TitleHaBelep,
