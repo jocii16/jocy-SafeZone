@@ -4,8 +4,11 @@ CreateThread(function()
             coords = v.coords,
             radius = v.radius,
             debug = v.debug,
-            inside = function()
+            onExit = function ()
                 SetEntityInvincible(cache.ped, false)
+            end,
+            inside = function()
+                SetEntityInvincible(cache.ped, true)
                 NetworkSetFriendlyFireOption(true)
                 SetEntityCanBeDamaged(cache.vehicle, true)
             end
