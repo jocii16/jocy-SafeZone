@@ -4,20 +4,22 @@ CreateThread(function()
             coords = v.coords,
             radius = v.radius,
             debug = v.debug,
-            onExit = function ()
-                SetEntityInvincible(cache.ped, false)
-            end,
             inside = function()
                 SetEntityInvincible(cache.ped, true)
                 NetworkSetFriendlyFireOption(true)
                 SetEntityCanBeDamaged(cache.vehicle, true)
+                DisableControlAction(0, 24, true)
+                DisableControlAction(0, 257, true)
+                DisableControlAction(0, 263, true)
             end
         })
+
+       if Config.zones[k].EnableBlip then
         local blip1 = AddBlipForCoord(v.coords)
 
-        SetBlipSprite(blip1, 487)
+        SetBlipSprite(blip1, 461)
         SetBlipColour(blip1, 45)
-        SetBlipScale(blip1, 1.2)
+        SetBlipScale(blip1, 0.85)
         SetBlipAsShortRange(blip1, true)
 
         BeginTextCommandSetBlipName("STRING")
@@ -26,6 +28,7 @@ CreateThread(function()
 
         local blip3 = AddBlipForRadius(v.coords, v.radius)
         SetBlipColour(blip3, 69)
-        SetBlipAlpha(blip3, 150)
+        SetBlipAlpha(blip3, 150) 
+        end
     end
 end)
